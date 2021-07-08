@@ -18,12 +18,9 @@ from plotting import plot_tasks
 #%% --------------------------------------------------------------------------------------------------------------------
 # GLOBAL VARIABLES
 # ----------------------------------------------------------------------------------------------------------------------
-# VERSION    = 'V4' 
-TASK       = 'mem_cap' #'mem_cap' 'pttn_recog'
+TASK       = 'pttn_recog' #'mem_cap' 'pttn_recog'
 CONNECTOME = 'human_500'
-CLASS      = 'functional'
 ANALYSIS   = 'reliability' # 'reliability' 'significance' 'spintest'
-INPUTS     = 'subctx'
 
 
 #%% --------------------------------------------------------------------------------------------------------------------
@@ -31,15 +28,15 @@ INPUTS     = 'subctx'
 # ----------------------------------------------------------------------------------------------------------------------
 PROJ_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROC_RES_DIR = os.path.join(PROJ_DIR, 'proc_results')
-# PROC_RES_DIR = os.path.join(PROJ_DIR, 'proc_results', VERSION)
-RES_TSK_DIR = os.path.join(PROC_RES_DIR, TASK, 'tsk_results', ANALYSIS, f'{INPUTS}_scale{CONNECTOME[-3:]}')
-
+# PROC_RES_DIR = os.path.join(PROJ_DIR, 'proc_results')#, '100_reservoir', 'V2')
+# PROC_RES_DIR = os.path.join(PROJ_DIR, 'proc_results', '100_rnns')
+RES_TSK_DIR = os.path.join(PROC_RES_DIR, TASK, ANALYSIS, CONNECTOME)
 
 #%% --------------------------------------------------------------------------------------------------------------------
 # IMPORT DATA FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 def load_scores(coding):
-    coding_scores = pd.read_csv(os.path.join(RES_TSK_DIR, f'{CLASS}_{coding}.csv'))
+    coding_scores = pd.read_csv(os.path.join(RES_TSK_DIR, f'{coding}.csv'))
     return coding_scores
 
 

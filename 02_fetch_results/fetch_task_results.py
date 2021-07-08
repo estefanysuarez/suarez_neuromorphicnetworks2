@@ -11,9 +11,9 @@ import pandas as pd
 #%% --------------------------------------------------------------------------------------------------------------------
 # GLOBAL DYNAMIC VARIABLES
 # ----------------------------------------------------------------------------------------------------------------------
-# VERSION = 'V4'
-CLASS = 'functional'
-INPUTS = 'subctx' 
+
+
+
 
 #%% --------------------------------------------------------------------------------------------------------------------
 # GLOBAL STATIC VARIABLES
@@ -42,7 +42,7 @@ def sort_class_labels(class_labels):
         return class_labels
 
 
-def concatenate_tsk_results(path, partition, coding, scores2return, include_alpha, n_samples=1000):
+def concatenate_tsk_results(path, coding, scores2return, include_alpha, n_samples=1000):
 
     df_scores = []
     df_avg_scores_per_class = []
@@ -52,7 +52,7 @@ def concatenate_tsk_results(path, partition, coding, scores2return, include_alph
         succes_sample = True
         try:
             # print(f'sample_id:  {sample_id}')
-            scores = pd.read_csv(os.path.join(path, f'{CLASS}_{coding}_score_{sample_id}.csv')).reset_index(drop=True)
+            scores = pd.read_csv(os.path.join(path, f'{coding}_score_{sample_id}.csv')).reset_index(drop=True)
 
         except:
             succes_sample = False
@@ -167,22 +167,19 @@ def concat_tsk_results(connectome, task, analysis, dynamics, coding='encoding', 
         dynamics (str): 'stable', 'critical', 'chaotic'
     """
 
-    output_dir = os.path.join(PROC_RES_DIR, task, 'tsk_results', analysis, f'{INPUTS}_scale{connectome[-3:]}')
+    output_dir = os.path.join(PROC_RES_DIR, task, analysis, connectome)
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
     outputs = {
-               'scores':os.path.join(output_dir, f'{CLASS}_{coding}.csv'),
-               'avg_scores_per_alpha':os.path.join(output_dir, f'{CLASS}_avg_{coding}.csv'),
-               'avg_scores_per_class':os.path.join(output_dir, f'{CLASS}_avg_{coding}_{dynamics}.csv')
+               'scores':os.path.join(output_dir, f'{coding}.csv'),
+               'avg_scores_per_alpha':os.path.join(output_dir, f'avg_{coding}.csv'),
+               'avg_scores_per_class':os.path.join(output_dir, f'avg_{coding}_{dynamics}.csv')
               }
 
-#    alphas = [0.05, 0.1, 0.3, 0.5, 0.7, 0.8, 0.9, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
-#    alphas = [0.3, 0.5, 0.7, 0.8, 0.9, 0.95, 1.0, 1.05, 1.1, 1.2, 1.3, 1.4, 1.5, 2.0, 2.5, 3.0, 3.5]
-
     include_alpha = {
-                     'stable':np.linspace(0.5, 0.95, 10), #[0.3, 0.5, 0.7, 0.8, 0.9],
+                     'stable':np.linspace(0.5, 0.95, 10),
                      'critical':[1.0],
-                     'chaotic':np.linspace(1.05, 1.5, 10) #[1.5, 2.0, 2.5, 3.0, 3.5] # [1.1, 1.2, 1.3, 1.4, 1.5] #
+                     'chaotic':np.linspace(1.05, 1.5, 10) 
                      }
 
     scores2return = []
@@ -190,10 +187,9 @@ def concat_tsk_results(connectome, task, analysis, dynamics, coding='encoding', 
         if not os.path.exists(path):
             scores2return.append(output)
 
-    input_dir = os.path.join(RAW_RES_DIR, task, 'tsk_results', analysis, f'{INPUTS}_scale{connectome[-3:]}')
+    input_dir = os.path.join(RAW_RES_DIR, task, 'tsk_res', analysis, connectome)
 
     res = concatenate_tsk_results(path=input_dir,
-                                  partition=CLASS,
                                   coding=coding,
                                   scores2return=scores2return,
                                   include_alpha=include_alpha[dynamics],
@@ -219,9 +215,9 @@ if __name__ == '__main__':
             ]
 
     ANALYSES   =  {
-                   'reliability':1000,
-                   'significance':1000,
-                   'spintest':1000,
+                   'reliability':100,
+                   # 'significance':1000,
+                   # 'spintest':1000,
                    }
 
     DYNAMICS   =  [
@@ -236,12 +232,12 @@ if __name__ == '__main__':
             for dyn_regime in DYNAMICS:
                 for task in TASKS:
                     concat_tsk_results(connectome,
-                                      task,
-                                      analysis,
-                                      dyn_regime,
-                                      coding='encoding',
-                                      n_samples=n_samples
-                                      )
+                                       task,
+                                       analysis,
+                                       dyn_regime,
+                                       coding='encoding',
+                                       n_samples=n_samples
+                                       )
 
 #               concat_tsk_results(connectome,
 #                                  analysis,
